@@ -226,7 +226,7 @@ class Remote:
 
         return strarray_to_strings(specs)
 
-    def push(self, specs, callbacks=None, proxy=None):
+    def push(self, specs, callbacks=None, proxy=None, headers=[]):
         """
         Push the given refspec to the remote. Raises ``GitError`` on protocol
         error or unpack failure.
@@ -252,6 +252,7 @@ class Remote:
         with git_push_options(callbacks) as payload:
             opts = payload.push_options
             self.__set_proxy(opts.proxy_opts, proxy)
+            opts.custom_headers = StrArray(headers)
             with StrArray(specs) as refspecs:
                 err = C.git_remote_push(self._remote, refspecs, opts)
                 payload.check_error(err)
